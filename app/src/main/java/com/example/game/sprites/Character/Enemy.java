@@ -1,4 +1,4 @@
-package com.example.game.sprites;
+package com.example.game.sprites.Character;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -10,8 +10,7 @@ import java.util.Random;
 import com.example.game.GameManager;
 import com.example.game.GameManagerCallback;
 import com.example.game.R;
-
-import java.util.ArrayList;
+import com.example.game.sprites.Sprite;
 
 public class Enemy implements Sprite {
 
@@ -43,22 +42,23 @@ public class Enemy implements Sprite {
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(coin, coinX, coinY, null);
+            canvas.drawBitmap(coin, coinX, coinY, null);
     }
 
+    // If coin is clicked we draw another one after one second
     @Override
     public void update() {
-        if (coinClicked) {
-            Random randomWidth = new Random(System.currentTimeMillis());
-            coinX = randomWidth.nextInt(screenWidth - coinWidth);
+    }
 
-            Random randomHeight = new Random(System.currentTimeMillis());
-            coinY = randomHeight.nextInt(screenHeight - coinHeight);
+    public void updateCoin() {
+        Random randomWidth = new Random(System.currentTimeMillis());
+        coinX = randomWidth.nextInt(screenWidth - coinWidth);
 
-            Rect coinPosition = new Rect(coinX, coinY, coinX + coinWidth, coinY + coinHeight);
-            callback.updatePosition(coinPosition);
-            coinClicked = false;
-        }
+        Random randomHeight = new Random(System.currentTimeMillis());
+        coinY = randomHeight.nextInt(screenHeight - coinHeight);
+        Rect newCoin = new Rect(coinX, coinY, coinX + coinWidth, coinY + coinHeight);
+
+        callback.updatePosition(newCoin);
     }
 
     public boolean isCoinClicked(int x, int y) {
