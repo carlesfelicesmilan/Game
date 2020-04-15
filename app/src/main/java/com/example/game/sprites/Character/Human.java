@@ -58,7 +58,7 @@ public class Human implements Sprite {
 
     @Override
     public void draw(Canvas canvas) {
-        if ((hp <= 100) && (hp >= 80)) {
+       /* if ((hp <= 100) && (hp >= 80)) {
             canvas.drawBitmap(human, posX, posY, null);
         }
         else if ((hp <= 80) && (hp >= 60)) {
@@ -69,7 +69,13 @@ public class Human implements Sprite {
         }
         else if ((hp <= 40) && (hp >= 0)) {
             canvas.drawBitmap(human3, posX, posY, null);
-        }
+        }*/
+       if(hit) {
+           canvas.drawBitmap(human3, posX, posY, null);
+       }
+       else {
+           canvas.drawBitmap(human, posX, posY, null);
+       }
     }
 
     @Override

@@ -12,12 +12,11 @@ public class Button implements Sprite{
     Bitmap button;
     MediaPlayer sound;
 
-    public boolean isButtonClicked(int evX, int evY) {
+    public boolean isClicked(int evX, int evY) {
         if (evX >= posX && evX < (posX + width)
                 && evY >= posY && evY < (posY + height)) {
             //tada, if this is true, you've started your click inside your bitmap
             buttonClicked = !buttonClicked;
-            sound.start();
             return true;
         }
         else {

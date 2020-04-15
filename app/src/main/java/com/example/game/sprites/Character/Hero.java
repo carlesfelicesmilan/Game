@@ -5,29 +5,36 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.example.game.R;
+import com.example.game.sprites.Numbers.Hp;
+import com.example.game.sprites.Numbers.Numbers;
 import com.example.game.sprites.Sprite;
 
 public class Hero implements Sprite {
 
     private int level, totalCoins;
-    private Numbers HeroHpValue, numberOfPotions;
-    private int width, height, posX, posY, posDamageY, potions;
+    private Hp HeroHp;
+    private Hp numberOfPotions;
+    private int width, height, posX, posY, speedX;
+    private int potions;
     private int hp, def, receivedDamage, atq;
-    private Bitmap terrexBase;
+    private Bitmap charizard;
     private Bitmap terrexHit;
     private Bitmap potionRed;
     private boolean hit;
+    private boolean loaded;
 
     public Hero(Resources resources, int screenHeight, int screenWidth) {
         width = (int) resources.getDimension(R.dimen.button_width);
         height = (int) resources.getDimension(R.dimen.button_height);
-        posX = screenWidth / 2 - width / 2;
+        posX = screenWidth - width;
         posY = screenHeight - height * 2;
+        speedX = -5;
+
         hp = 100;
         atq = 7;
 
-        terrexBase = BitmapFactory.decodeResource(resources, R.drawable.terrex);
-        terrexBase = Bitmap.createScaledBitmap(terrexBase, width, height, false);
+        charizard = BitmapFactory.decodeResource(resources, R.drawable.charizardback);
+        charizard = Bitmap.createScaledBitmap(charizard, width, height, false);
 
         terrexHit = BitmapFactory.decodeResource(resources, R.drawable.terrexhit3);
         terrexHit = Bitmap.createScaledBitmap(terrexHit, width, height, false);
@@ -35,37 +42,46 @@ public class Hero implements Sprite {
         potionRed = BitmapFactory.decodeResource(resources, R.drawable.redpotion);
         potionRed = Bitmap.createScaledBitmap(potionRed, width, height, false);
 
-        HeroHpValue = new Numbers(resources, screenHeight, screenWidth);
-        HeroHpValue.updateHp(hp);
-
-        HeroHpValue.setHpPos(posX + width / 2, posY - height / 2);
-        HeroHpValue.setDamagePos(0, posY - height);
+        //HeroHp = new Hp(resources);
+        HeroHp = new Hp(resources);
+        HeroHp.updateHp(hp);
 
         potions = 3;
-        numberOfPotions = new Numbers(resources, screenHeight, screenWidth);
+        numberOfPotions = new Hp(resources);
+        //numberOfPotions.scaleNumbers(width/2, height/2);
         numberOfPotions.updateHp(potions);
-        numberOfPotions.setHpPos(posX + width, posY + height);
+
+        loaded = false;
     }
 
     public void draw(Canvas canvas) {
-        HeroHpValue.drawHp(canvas);
-        if(hit) {
-            HeroHpValue.drawDamage(canvas);
-            canvas.drawBitmap(terrexHit, posX, posY, null);
-        }
-        else {
-            canvas.drawBitmap(terrexBase, posX, posY, null);
-        }
+        canvas.drawBitmap(charizard, posX, posY, null);
+        if(loaded) {
+            HeroHp.setHpPos(posX + width/2, posY - height / 2);
+            HeroHp.draw(canvas);
+            numberOfPotions.setHpPos(posX + width, posY + height);
+            if(hit) {
+                canvas.drawBitmap(terrexHit, posX, posY, null);
+            }
+            else {
+                canvas.drawBitmap(charizard, posX, posY, null);
+            }
 
-        if(potions > 0) {
-            numberOfPotions.drawHp(canvas);
-            canvas.drawBitmap(potionRed, posX, posY + height, null);
+            if(potions > 0) {
+                numberOfPotions.draw(canvas);
+                canvas.drawBitmap(potionRed, posX, posY + height, null);
+            }
         }
     }
 
     @Override
     public void update() {
-
+        if(posX > 0){
+            posX+=speedX;
+        }
+        else {
+            loaded = true;
+        }
     }
 
     public boolean isDead() {
@@ -84,7 +100,7 @@ public class Hero implements Sprite {
     public void usePotion() {
         potions--;
         hp+=50;
-        HeroHpValue.updateHp(hp);
+        HeroHp.updateHp(hp);
         numberOfPotions.updateHp(potions);
     }
 
@@ -96,5 +112,9 @@ public class Hero implements Sprite {
         else {
             return false;
         }
+    }
+
+    public boolean isloaded() {
+        return loaded;
     }
 }

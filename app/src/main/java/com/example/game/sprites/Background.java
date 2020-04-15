@@ -9,11 +9,12 @@ import com.example.game.R;
 
 public class Background implements Sprite {
 
-    public int screenHeight;
-    private Bitmap top, bottom;
-    private  int topHeight, bottomHeight;
+    public int screenHeight, screenWidth;
+    private Bitmap top, bottom, pokemon;
+    private int topHeight, bottomHeight;
+    private boolean test;
 
-    public Background(Resources resources, int screenHeight) {
+    public Background(Resources resources, int screenHeight, int screenWidth) {
         this.screenHeight = screenHeight;
         topHeight = (int) resources.getDimension(R.dimen.bkg_top_height);
         bottomHeight = (int) resources.getDimension(R.dimen.bkg_bottom_height);
@@ -24,6 +25,11 @@ public class Background implements Sprite {
         top = Bitmap.createScaledBitmap(bkgTop, bkgTop.getWidth(), topHeight, false);
         bottom = Bitmap.createScaledBitmap(bkgBottom, bkgBottom.getWidth(), bottomHeight, false);
 
+        Bitmap pokemonbg = BitmapFactory.decodeResource(resources,R.drawable.background2);
+        pokemon = Bitmap.createScaledBitmap(pokemonbg, screenWidth, screenHeight , false);
+
+        test = false;
+
     }
 
     @Override
@@ -31,11 +37,14 @@ public class Background implements Sprite {
     // The second draw is for tablets
     // Ground needs to be set at the end of the screen minus the height of the actual midline
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(top, 0, 0, null);
-        canvas.drawBitmap(top, top.getWidth(), 0, null);
+        if (test) {
+            canvas.drawBitmap(top, 0, 0, null);
+            canvas.drawBitmap(top, top.getWidth(), 0, null);
 
-        canvas.drawBitmap(bottom, 0, screenHeight - bottom.getHeight(), null);
-        canvas.drawBitmap(bottom, bottom.getWidth(), screenHeight - bottom.getHeight(), null);
+            canvas.drawBitmap(bottom, 0, screenHeight - bottom.getHeight(), null);
+            canvas.drawBitmap(bottom, bottom.getWidth(), screenHeight - bottom.getHeight(), null);
+        }
+        canvas.drawBitmap(pokemon,0,0,null);
     }
 
     @Override

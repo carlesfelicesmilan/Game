@@ -13,5 +13,5 @@ public interface GameManagerCallback {
     void updatePosition(Obstacle obstacle, ArrayList<Rect> positions);
     void removeObstacle(Obstacle obstacle);
 
-    void updateCoinPOisition(Rect coinPosition);
+    //void updateCoinPOisition(Rect coinPosition);
 }

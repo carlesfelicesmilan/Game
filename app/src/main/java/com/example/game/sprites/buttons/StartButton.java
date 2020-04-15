@@ -10,7 +10,7 @@ import com.example.game.R;
 
 public class StartButton extends Button {
 
-    public StartButton(Resources resources, Context context, int screenHeight, int screenWidth) {
+    public StartButton(Resources resources, int screenHeight, int screenWidth) {
 
         width = (int) resources.getDimension(R.dimen.button_width)*2;
         height = (int) resources.getDimension(R.dimen.button_height);
@@ -20,7 +20,7 @@ public class StartButton extends Button {
         button = BitmapFactory.decodeResource(resources, R.drawable.start);
         button = Bitmap.createScaledBitmap(button, width, height, false);
 
-        sound = MediaPlayer.create(context, R.raw.start);
+        //sound = MediaPlayer.create(context, R.raw.start);
     }
 
 }

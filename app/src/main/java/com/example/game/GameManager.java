@@ -25,6 +25,8 @@ import com.example.game.sprites.Score;
 
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 
 public class GameManager extends SurfaceView implements SurfaceHolder.Callback, GameManagerCallback {
 
@@ -50,12 +52,12 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     private StartButton startButton;
     private ExitButton exitButton;
 
-    private Enemy coin;
+    //private Enemy coin;
 
     private Hero hero;
     private Orc orc;
 
-    private Rect coinPosition;
+    //private Rect coinPosition;
 
     // mpPint: Sound for the point (obstacle removed)
     // mpSwoosh: Sound for the beggining of the game
@@ -67,6 +69,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     private MediaPlayer mpOptionOn;
     private MediaPlayer mpOptionOff;
     private MediaPlayer start;
+    private MediaPlayer orcDamaged;
+    private MediaPlayer battle;
+    private MediaPlayer clinc;
 
     public GameManager(Context context, AttributeSet attributeSet) {
         super(context);
@@ -86,25 +91,28 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     // We need to restart bird position and obstacle position everytime that we start a new game
     private void initGame() {
         score = 0;
-        coinPosition = new Rect();
-        background = new Background(getResources(), dm.heightPixels);
+        //coinPosition = new Rect();
+        background = new Background(getResources(), dm.heightPixels, dm.widthPixels);
         gameOver = new GameOver(getResources(), dm.heightPixels, dm.widthPixels);
-        startButton = new StartButton(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
+        startButton = new StartButton(getResources(), dm.heightPixels, dm.widthPixels);
         exitButton = new ExitButton(getResources(), dm.heightPixels, dm.widthPixels);
         optionsButton = new OptionsButton(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         backOptionsButton = new BackOptionsButton(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         scoreSprite = new Score(getResources(), dm.heightPixels, dm.widthPixels);
-        coin = new Enemy(getResources(), dm.heightPixels, dm.widthPixels, this);
+        //coin = new Enemy(getResources(), dm.heightPixels, dm.widthPixels, this);
         hero = new Hero(getResources(), dm.heightPixels, dm.widthPixels);
-        orc = new Orc(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
+        orc = new Orc(getResources(), dm.heightPixels, dm.widthPixels);
     }
 
     private void initSounds() {
-        mpPoint = MediaPlayer.create(getContext(), R.raw.coin);
-        mpSwoosh = MediaPlayer.create(getContext(), R.raw.swoosh);
-        mpDie = MediaPlayer.create(getContext(), R.raw.die);
-        mpHit = MediaPlayer.create(getContext(), R.raw.hit);
-        mpWing = MediaPlayer.create(getContext(), R.raw.wing);
+        //mpPoint = MediaPlayer.create(getContext(), R.raw.coin);
+        //mpSwoosh = MediaPlayer.create(getContext(), R.raw.swoosh);
+        //mpDie = MediaPlayer.create(getContext(), R.raw.die);
+        //mpHit = MediaPlayer.create(getContext(), R.raw.hit);
+        //mpWing = MediaPlayer.create(getContext(), R.raw.wing);
+        orcDamaged = MediaPlayer.create(getContext(), R.raw.sword);
+        battle = MediaPlayer.create(getContext(), R.raw.battle2);
+        clinc = MediaPlayer.create(getContext(), R.raw.clinc);
         //mpOptionOn = MediaPlayer.create(getContext(), R.raw.optionson);
         //mpOptionOff = MediaPlayer.create(getContext(), R.raw.optionsoff);
         //start = MediaPlayer.create(getContext(), R.raw.start);
@@ -144,7 +152,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     public void update(){
         switch (gameState) {
             case PLAYING:
-                coin.update();
+                orc.update();
+                hero.update();
                 break;
             case GAME_OVER:
                 break;
@@ -157,7 +166,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
         super.draw(canvas);
         if (canvas != null) {
             canvas.drawRGB(150,255,255);
-            background.draw(canvas);
             switch (gameState) {
                 case INITIAL:
                     optionsButton.draw(canvas);
@@ -168,8 +176,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     backOptionsButton.draw(canvas);
                     break;
                 case PLAYING:
-                    coin.draw(canvas);
-                    scoreSprite.draw(canvas);
+                    background.draw(canvas);
+                    battle.start();
                     hero.draw(canvas);
                     orc.draw(canvas);
                     break;
@@ -177,7 +185,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     backOptionsButton.draw(canvas);
                     break;
                 case GAME_OVER:
-                    scoreSprite.draw(canvas);
                     gameOver.draw(canvas);
                     break;
                 case EXIT:
@@ -186,7 +193,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     break;
             }
         }
-
     }
 
     // In initial event we want the bird start flying when user clicks on the screen so we call onTouchEvent
@@ -199,46 +205,33 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
 
         switch (gameState) {
             case INITIAL:
-                if (optionsButton.isButtonClicked(evX, evY)) {
+                if (optionsButton.isClicked(evX, evY)) {
                     gameState = GameState.OPTIONS;
                 }
-                else if (startButton.isButtonClicked(evX, evY)){
+                else if (startButton.isClicked(evX, evY)){
                     gameState = GameState.PLAYING;
                 }
-                else if (exitButton.isButtonClicked(evX, evY)) {
+                else if (exitButton.isClicked(evX, evY)) {
                     gameState = GameState.EXIT;
                 }
                 break;
             case OPTIONS:
-                if (backOptionsButton.isButtonClicked(evX, evY)) {
+                if (backOptionsButton.isClicked(evX, evY)) {
                     gameState = GameState.INITIAL;
                 }
                 break;
             case PLAYING:
-                if (orc.isHit(evX, evY)) {
-                    //gameState = GameState.BATTLE;
-                    orc.calculateDamage(hero.atq);
-                    score = orc.calculateDamage(hero.atq);
+                if (orc.isHit(evX, evY, hero.atq())) {
+                    orcDamaged.start();
                     if (orc.isDead()){
-                        gameState = GameState.INITIAL;
-                    }
-                }
-                if (coin.isCoinClicked(evX,evY)) {
-                    mpPoint.start();
-                    score++;
-                    scoreSprite.updateScore(score);
-                    coin.updateCoin();
-                }
-                else {
-                    scoreSprite.updateScore(score);
-                    coin.updateCoin();
-                    if (score < 0) {
                         gameState = GameState.GAME_OVER;
                     }
                 }
-                break;
+                if (hero.isPotionUsed(evX, evY)) {
+                    hero.usePotion();
+                }
             case BATTLE:
-                if (backOptionsButton.isButtonClicked(evX, evY)) {
+                if (backOptionsButton.isClicked(evX, evY)) {
                     gameState = GameState.INITIAL;
                 }
                 break;
@@ -265,9 +258,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
 
     }
 
-    @Override
+  /*  @Override
     public void updateCoinPOisition(Rect coinPosition) {
         this.coinPosition = coinPosition;
     }
-
+*/
 }
