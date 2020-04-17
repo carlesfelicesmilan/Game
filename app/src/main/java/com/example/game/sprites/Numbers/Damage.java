@@ -30,6 +30,14 @@ public class Damage {
         }
     }
 
+    public void drawEnemyDmg(Canvas canvas) {
+        ArrayList<Bitmap> damage = number.convertToBitmap(dmg);
+        for (int i = 0; i < damage.size(); i++) {
+            int x = posX - damage.size() * numberWidth / 2 + numberWidth * i;
+            canvas.drawBitmap(damage.get(i), x , posY, null);
+        }
+    }
+
     public void setDamagePos(int x, int y) {
         this.initPosX = x;
         this.initPosY = y;
@@ -51,6 +59,11 @@ public class Damage {
 
     public void isHit(boolean hit) {
         this.hit = hit;
+
+    }
+
+    public void setSize(int x, int y) {
+        number.scaleNumbers(x,y);
     }
 
 }

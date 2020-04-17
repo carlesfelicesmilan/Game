@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import com.example.game.R;
 import com.example.game.sprites.Numbers.Damage;
 import com.example.game.sprites.Numbers.Hp;
-import com.example.game.sprites.Numbers.Numbers;
 import com.example.game.sprites.Sprite;
 
 import java.util.Random;
@@ -25,12 +24,12 @@ public class Orc implements Sprite {
 
     public Orc(Resources resources, int screenHeight, int screenWidth) {
 
-        width = (int) resources.getDimension(R.dimen.button_width);
-        height = (int) resources.getDimension(R.dimen.button_height);
+        width = (int) resources.getDimension(R.dimen.hero_size);
+        height = (int) resources.getDimension(R.dimen.hero_size);
         finalX = screenWidth - width;
 
-        posX = 0;
-        posY = height * 2;
+        //posX = 0;
+        //posY = height * 2;
         speedX = 5;
 
         hp = 100;
@@ -48,42 +47,36 @@ public class Orc implements Sprite {
         orcHp = new Hp(resources);
         orcHp.updateHp(hp);
 
-        orcDamage = new Damage(resources);
-        //orcDamage.setDamagePos(0, posY - height);
-
+        //orcDamage = new Damage(resources);
     }
 
     // We calculate the damage by atq - def + extra random damage
     // We also update the hp and the received Damage
-    public void calculateDamage(int damage) {
+    public int calculateDamage(int damage) {
         if (def < damage) {
             receivedDamage = damage - def;
             Random randomDamage = new Random(System.currentTimeMillis());
             int extraDamage = randomDamage.nextInt(receivedDamage);
             hp = hp - (receivedDamage + extraDamage);
             receivedDamage = receivedDamage + extraDamage;
-            orcHp.updateHp(hp);
-            orcDamage.updateDamage(receivedDamage);
         }
+        return receivedDamage;
     }
 
-    public boolean isHit(int evX, int evY, int damage) {
+    public boolean isHit(int evX, int evY) {
         if (evX >= posX && evX < (posX + width) && evY >= posY && evY < (posY + height)) {
             //tada, if this is true, you've started your click inside your bitmap
-            calculateDamage(damage);
             hit = true;
-            orcDamage.isHit(hit);
             return true;
         }
         else {
             hit = false;
-            orcDamage.isHit(hit);
             return false;
         }
     }
 
-    public void hit() {
-        hit = true;
+    public boolean isHit() {
+        return hit;
     }
 
     public int orcHp() {return hp;}
@@ -102,18 +95,6 @@ public class Orc implements Sprite {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawBitmap(gengar, posX, posY, null);
-        if (loaded) {
-            orcHp.setHpPos(posX + width/4, posY - height / 2);
-            orcHp.draw(canvas);
-        }
-        if(hit) {
-            orcDamage.setDamagePos(posX + width/4, posY - height /2);
-            orcDamage.draw(canvas);
-            canvas.drawBitmap(gengar, posX, posY, null);
-        }
-        else {
-            canvas.drawBitmap(gengar, posX, posY, null);
-        }
     }
 
     @Override
@@ -129,6 +110,24 @@ public class Orc implements Sprite {
 
     public boolean isloaded() {
         return loaded;
+    }
+
+    //Size is the same for width and Height
+    public int getSize() {
+        return width;
+    }
+
+    public void setPosition(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+    public Bitmap getBitmap() {
+        return gengar;
+    }
+
+    public int getHp() {
+        return hp;
     }
 
 }

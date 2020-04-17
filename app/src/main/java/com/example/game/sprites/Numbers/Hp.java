@@ -21,12 +21,23 @@ public class Hp {
     public void draw(Canvas canvas) {
         ArrayList<Bitmap> currentHp = number.convertToBitmap(hp);
         for (int i = 0; i < currentHp.size(); i++) {
-            int x = posX - currentHp.size() * numberWidth / 2 + numberHeight * i;
+            //int x = posX - currentHp.size() * numberWidth / 2 + numberHeight * i;
+            //int x = posX + numberHeight * i;
+            int x = posX + number.getNumberWidth() * i;
             canvas.drawBitmap(currentHp.get(i), x, posY, null);
         }
     }
 
-    public void setHpPos(int x, int y) {
+    public void drawEnemyHp(Canvas canvas) {
+        ArrayList<Bitmap> currentHp = number.convertToBitmap(hp);
+        for (int i = 0; i < currentHp.size(); i++) {
+            int x = posX - currentHp.size() * numberWidth / 2 + numberHeight * i;
+            //int x = posX - numberWidth * currentHp.size() + numberHeight * i;
+            canvas.drawBitmap(currentHp.get(i), x, posY, null);
+        }
+    }
+
+    public void setPosition(int x, int y) {
         this.posX = x;
         this.posY = y;
     }
@@ -35,6 +46,9 @@ public class Hp {
         this.hp = hp;
     }
 
+    public void setSize(int x, int y) {
+        number.scaleNumbers(x,y);
+    }
 
 }
 

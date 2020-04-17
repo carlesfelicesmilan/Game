@@ -12,6 +12,7 @@ public class Background implements Sprite {
     public int screenHeight, screenWidth;
     private Bitmap top, bottom, pokemon;
     private int topHeight, bottomHeight;
+    private int posX, posY;
     private boolean test;
 
     public Background(Resources resources, int screenHeight, int screenWidth) {
@@ -19,14 +20,17 @@ public class Background implements Sprite {
         topHeight = (int) resources.getDimension(R.dimen.bkg_top_height);
         bottomHeight = (int) resources.getDimension(R.dimen.bkg_bottom_height);
 
+        posX = 0;
+        posY = 0;
+
         Bitmap bkgTop = BitmapFactory.decodeResource(resources,R.drawable.sky);
         Bitmap bkgBottom = BitmapFactory.decodeResource(resources,R.drawable.ground);
 
         top = Bitmap.createScaledBitmap(bkgTop, bkgTop.getWidth(), topHeight, false);
         bottom = Bitmap.createScaledBitmap(bkgBottom, bkgBottom.getWidth(), bottomHeight, false);
 
-        Bitmap pokemonbg = BitmapFactory.decodeResource(resources,R.drawable.background2);
-        pokemon = Bitmap.createScaledBitmap(pokemonbg, screenWidth, screenHeight , false);
+        pokemon = BitmapFactory.decodeResource(resources,R.drawable.green);
+        pokemon = Bitmap.createScaledBitmap(pokemon, screenWidth, screenHeight , false);
 
         test = false;
 
@@ -44,11 +48,20 @@ public class Background implements Sprite {
             canvas.drawBitmap(bottom, 0, screenHeight - bottom.getHeight(), null);
             canvas.drawBitmap(bottom, bottom.getWidth(), screenHeight - bottom.getHeight(), null);
         }
-        canvas.drawBitmap(pokemon,0,0,null);
+        canvas.drawBitmap(pokemon, posX, posY,null);
     }
 
     @Override
     public void update() {
 
+    }
+
+    public void setPosition(int posX, int posY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+    public void setSize(int x, int y) {
+        pokemon = Bitmap.createScaledBitmap(pokemon, x, y, false);
     }
 }

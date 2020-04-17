@@ -12,6 +12,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.game.sprites.Background;
+import com.example.game.sprites.Battle.BattleMenu;
 import com.example.game.sprites.Character.Enemy;
 import com.example.game.sprites.Character.Hero;
 import com.example.game.sprites.Character.Orc;
@@ -57,6 +58,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     private Hero hero;
     private Orc orc;
 
+    private BattleMenu battle;
+
     //private Rect coinPosition;
 
     // mpPint: Sound for the point (obstacle removed)
@@ -70,7 +73,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     private MediaPlayer mpOptionOff;
     private MediaPlayer start;
     private MediaPlayer orcDamaged;
-    private MediaPlayer battle;
+    private MediaPlayer battleMusic;
     private MediaPlayer clinc;
 
     public GameManager(Context context, AttributeSet attributeSet) {
@@ -100,8 +103,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
         backOptionsButton = new BackOptionsButton(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         scoreSprite = new Score(getResources(), dm.heightPixels, dm.widthPixels);
         //coin = new Enemy(getResources(), dm.heightPixels, dm.widthPixels, this);
-        hero = new Hero(getResources(), dm.heightPixels, dm.widthPixels);
+        hero = new Hero(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         orc = new Orc(getResources(), dm.heightPixels, dm.widthPixels);
+        battle = new BattleMenu(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
     }
 
     private void initSounds() {
@@ -111,7 +115,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
         //mpHit = MediaPlayer.create(getContext(), R.raw.hit);
         //mpWing = MediaPlayer.create(getContext(), R.raw.wing);
         orcDamaged = MediaPlayer.create(getContext(), R.raw.sword);
-        battle = MediaPlayer.create(getContext(), R.raw.battle2);
+        //battleMusic = MediaPlayer.create(getContext(), R.raw.battle2);
         clinc = MediaPlayer.create(getContext(), R.raw.clinc);
         //mpOptionOn = MediaPlayer.create(getContext(), R.raw.optionson);
         //mpOptionOff = MediaPlayer.create(getContext(), R.raw.optionsoff);
@@ -152,8 +156,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     public void update(){
         switch (gameState) {
             case PLAYING:
-                orc.update();
-                hero.update();
+                //orc.update();
+                //hero.update();
+                battle.update();
                 break;
             case GAME_OVER:
                 break;
@@ -165,7 +170,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawRGB(150,255,255);
+            canvas.drawRGB(211,211,211);
             switch (gameState) {
                 case INITIAL:
                     optionsButton.draw(canvas);
@@ -176,10 +181,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     backOptionsButton.draw(canvas);
                     break;
                 case PLAYING:
-                    background.draw(canvas);
-                    battle.start();
-                    hero.draw(canvas);
-                    orc.draw(canvas);
+                    battle.draw(canvas);
                     break;
                 case BATTLE:
                     backOptionsButton.draw(canvas);
@@ -221,15 +223,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                 }
                 break;
             case PLAYING:
-                if (orc.isHit(evX, evY, hero.atq())) {
-                    orcDamaged.start();
-                    if (orc.isDead()){
-                        gameState = GameState.GAME_OVER;
-                    }
-                }
-                if (hero.isPotionUsed(evX, evY)) {
-                    hero.usePotion();
-                }
+                battle.buttonClicked(evX,evY);
+                break;
+
             case BATTLE:
                 if (backOptionsButton.isClicked(evX, evY)) {
                     gameState = GameState.INITIAL;
