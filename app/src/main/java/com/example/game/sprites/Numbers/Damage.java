@@ -48,7 +48,7 @@ public class Damage {
     }
 
     public void update() {
-        if (hit) {
+    if (hit) {
             posX = initPosX;
             posY = initPosY;
             hit = false;

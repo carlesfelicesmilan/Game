@@ -5,6 +5,7 @@ public enum BattleState {
         ATTACK,
         ENEMYHIT,
         ENEMYFIRE,
+        ENEMYDAMAGED,
         SPELL,
         BAG,
         RUN,

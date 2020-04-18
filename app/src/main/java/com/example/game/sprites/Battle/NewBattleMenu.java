@@ -46,6 +46,8 @@ public class NewBattleMenu {
     private int attackButtonX, attackButtonY, spellButtonX, spellButtonY, itemButtonX, itemButtonY, runButtonX, runButtonY;
     private int heroX, heroY, heroWidth, heroHeight, enemyX, enemyY, enemyWidth, enemyHeight;
     private int heroHpX, heroHpY, heroHpWidth, heroHpHeight;
+    private int enemyDamageTakenX, enemyDamageTakenY, enemyDamageTakenXWidth, enemyDamageTakenXHeight;
+
     private int spellHeroX, spellHeroY, spellHeroWidth, spellHeroHeight;
 
     private boolean isLoaded;
@@ -54,11 +56,14 @@ public class NewBattleMenu {
 
     private NewNumbers heroHp;
     private NewNumbers EnemyHp;
+    private NewNumbers enemyDamageTaken;
 
     private NewSpell fire;
 
     private int menuSpeed;
     private int spellSpeed;
+
+    private boolean hit;
 
 
     public NewBattleMenu(Resources resources, Context context, int screenHeight, int screenWidth) {
@@ -105,6 +110,9 @@ public class NewBattleMenu {
         heroHpHeight = heroWidth/4;
         heroHpWidth = heroHeight/4;
 
+        enemyDamageTakenX = screenWidth - enemyWidth/2;
+        enemyDamageTakenY = enemyY - 70;
+
         spellHeroWidth = heroWidth;
         spellHeroHeight = heroWidth;
 
@@ -123,16 +131,22 @@ public class NewBattleMenu {
         attackClicked = new NewButton(buttonWidth, buttonHeight, attackButtonX, attackButtonY, BitmapFactory.decodeResource(resources, R.drawable.attackpressed), MediaPlayer.create(context, R.raw.clinc));
 
         heroHp = new NewNumbers(heroHpWidth, heroHpHeight, heroHpX, heroHpY, resources);
+        enemyDamageTaken = new NewNumbers(heroHpWidth, heroHpHeight, enemyDamageTakenX, enemyDamageTakenY, resources);
 
-        fire = new NewSpell(spellHeroWidth,spellHeroHeight, spellHeroX, spellHeroY, BitmapFactory.decodeResource(resources, R.drawable.fire),MediaPlayer.create(context, R.raw.flame));
+        fire = new NewSpell(spellHeroWidth,spellHeroHeight, spellHeroX, spellHeroY, BitmapFactory.decodeResource(resources, R.drawable.nancy),MediaPlayer.create(context, R.raw.flame));
 
         menuSpeed = 3;
         spellSpeed = 4;
 
         isLoaded = false;
+        hit = false;
+
+        battleMusic = MediaPlayer.create(context, R.raw.battle2);
+
     }
 
     public void draw(Canvas canvas) {
+        battleMusic.start();
         panel.draw(canvas);
         heroButton.draw(canvas);
         enemyButton.draw(canvas);
@@ -203,6 +217,16 @@ public class NewBattleMenu {
                     enemyButton.draw(canvas);
                     fire.draw(canvas);
                     break;
+                case ENEMYDAMAGED:
+                    field.draw(canvas);
+                    attack.draw(canvas);
+                    spell.draw(canvas);
+                    item.draw(canvas);
+                    run.draw(canvas);
+                    heroButton.draw(canvas);
+                    enemyButton.draw(canvas);
+                    enemyDamageTaken.draw(canvas);
+                    break;
             }
         }
     }
@@ -229,6 +253,7 @@ public class NewBattleMenu {
         else if(battleState == BattleState.ATTACK) {
             if(enemyButton.isClicked(x,y)) {
                 enemyButton.startSound();
+                hit = true;
                 battleState = battleState.ENEMYHIT;
             }
             else {
@@ -240,6 +265,7 @@ public class NewBattleMenu {
             if(enemyButton.isClicked(x,y)) {
                 spellHeroX = heroX + heroWidth/2;
                 spellHeroY = heroY - heroHeight/2;
+                hit = true;
                 battleState = battleState.ENEMYFIRE;
             }
             else {
@@ -268,12 +294,13 @@ public class NewBattleMenu {
         }
         if(battleState == battleState.ENEMYHIT) {
             dragon.takeDamage(hero.attack);
+            enemyDamageTaken.updateNumber(dragon.takeDamage(hero.attack));
             hero.takeDamage(dragon.attack);
             heroHp.updateNumber(hero.actualHealth);
-            battleState = BattleState.INITIAL;
+            battleState = BattleState.ENEMYDAMAGED;
         }
         if(battleState == battleState.ENEMYFIRE) {
-            if((spellHeroX < enemyX) && (spellHeroY > enemyY)) {
+            if((spellHeroX < enemyX) && (spellHeroY > 0)) {
                 spellHeroX+=spellSpeed;
                 spellHeroY-=spellSpeed;
                 fire.setPosition(spellHeroX, spellHeroY);
@@ -282,124 +309,24 @@ public class NewBattleMenu {
             else {
                 enemyButton.startSound();
                 dragon.takeFire();
+                enemyDamageTaken.updateNumber(30);
+                battleState = BattleState.ENEMYDAMAGED;
+            }
+        }
+        if(battleState == battleState.ENEMYDAMAGED) {
+            if (hit) {
+                enemyDamageTakenX = enemyX + enemyWidth/3;
+                enemyDamageTakenY = enemyY - 40;
+                hit = false;
+            }
+            if((enemyDamageTakenX < panelWidth) && (enemyDamageTakenY > 0)) {
+                enemyDamageTakenX += spellSpeed;
+                enemyDamageTakenY -= spellSpeed;
+                enemyDamageTaken.setPosition(enemyDamageTakenX, enemyDamageTakenY);
+            }
+            else {
                 battleState = BattleState.INITIAL;
-            }
+                }
         }
     }
-
-    /*public NewBattleMenu(Resources resources, Context context, int screenHeight, int screenWidth) {
-        enemy = new Orc(resources, screenHeight, screenWidth);
-        hero = new Hero(resources, context, screenHeight, screenWidth);
-        background = new Background(resources, screenHeight, screenWidth);
-        battlebuttons = new BattleButtons(resources, context, screenHeight, screenWidth);
-
-        heroX = screenWidth - hero.getSize();
-        heroY = battlebuttons.getPanelY() - hero.getSize() ;
-
-        heroHp = new Hp(resources);
-        heroHp.updateHp(hero.getHp());
-        heroHp.setSize(hero.getSize()/4, hero.getSize()/4);
-        heroHp.setPosition(0, heroY - hero.getSize()/4);
-
-        enemyX = 0;
-        enemyY = screenHeight/6;
-        enemyFinalX = screenWidth - enemy.getSize();
-
-        enemyHp = new Hp(resources);
-        enemyHp.updateHp(enemy.getHp());
-        enemyHp.setSize(enemy.getSize()/4, enemy.getSize()/4);
-        enemyHp.setPosition(enemyFinalX + enemy.getSize()/2, enemyY - enemy.getSize()/5);
-
-        enemyDamage = new Damage(resources);
-        enemyDamage.setSize(enemy.getSize()/4, enemy.getSize()/4);
-        enemyDamage.setDamagePos(enemyFinalX + enemy.getSize()/2, enemyY - enemy.getSize()/5);
-
-        background.setSize(screenWidth, battlebuttons.getPanelY());
-
-        menuSpeed = 3;
-
-        loaded = false;
-
-        battleMusic = MediaPlayer.create(context, R.raw.battle2);
-    }
-
-    //If the screen is loaded we initilize the positions of all elements
-    public void loadingScreen() {
-        if((heroX > 0) && (enemyX < enemyFinalX)){
-            heroX-=menuSpeed;
-            enemyX+=menuSpeed;
-            enemy.setPosition(enemyX,enemyY);
-            hero.setPosition(heroX,heroY);
-        }
-        else {
-            loaded = true;
-        }
-    }
-
-    public void draw(Canvas canvas) {
-        battleMusic.start();
-        battlebuttons.drawPanel(canvas);
-        if (loaded){
-            background.draw(canvas);
-            battlebuttons.drawAttackButton(canvas);
-            battlebuttons.drawItemButton(canvas);
-            battlebuttons.drawSpellButton(canvas);
-            battlebuttons.drawRunButton(canvas);
-            switch(battleState) {
-                case INITIAL:
-                    heroHp.draw(canvas);
-                    break;
-                case ATTACK:
-                    break;
-                case ENEMYHIT:
-                    heroHp.draw(canvas);
-                    enemyDamage.draw(canvas);
-                    //enemyHp.drawEnemyHp(canvas);
-                    break;
-                case SPELL:
-                    hero.drawSpell(canvas);
-                    spellAnimation();
-                    break;
-            }
-        }
-        canvas.drawBitmap(hero.getBitmap(), heroX, heroY, null);
-        enemy.draw(canvas);
-    }
-
-    public void update() {
-        loadingScreen();
-        enemyDamage.update();
-    }
-
-    public void buttonClicked(int x, int y) {
-        if(battlebuttons.isAtttackClicked(x,y)) {
-            battleState = BattleState.ATTACK;
-        }
-        else if(enemy.isHit(x,y) && (battleState == BattleState.ATTACK)) {
-            battleState = BattleState.ENEMYHIT;
-            damage = enemy.calculateDamage(hero.getAtq());
-            enemyDamage.updateDamage(damage);
-            enemyDamage.isHit(true);
-            enemyHp.updateHp(enemy.getHp()-damage);
-            hero.weaponAttackSound();
-        }
-        else if(battlebuttons.isSpellClicked(x,y)) {
-            hero.spellSound();
-            battleState = BattleState.SPELL;
-        }
-        else {
-            battleState = BattleState.INITIAL;
-        }
-    }
-
-    public void spellAnimation(){
-        int spellX = heroX;
-        int spellY = heroY;
-        if(heroX < enemyX) {
-            spellX+=menuSpeed;
-            spellY+=menuSpeed;
-            hero.setSpellPosition(spellX, spellY);
-        }
-    }
-*/
 }

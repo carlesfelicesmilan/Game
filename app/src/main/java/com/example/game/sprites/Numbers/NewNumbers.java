@@ -108,6 +108,11 @@ public class NewNumbers implements Sprite {
 
     }
 
+    public void setPosition(int x, int y) {
+        this.posX = x;
+        this.posY = y;
+    }
+
     public int getNumberWidth() {
         return zero.getWidth();
     }

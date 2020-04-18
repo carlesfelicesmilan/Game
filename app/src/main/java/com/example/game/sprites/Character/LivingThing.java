@@ -16,8 +16,8 @@ public class LivingThing{
         this.dead = false;
     }
 
-    // Calculate the damage adding a random value, we also check if the lving thing is dead
-    public void takeDamage(int damage) {
+    // Calculate the damage adding a random value, we also check if the living thing is dead
+    public int takeDamage(int damage) {
         if (this.defense < damage) {
             damage = damage - this.defense;
             this.actualHealth = this.actualHealth - damage;
@@ -25,6 +25,7 @@ public class LivingThing{
                 this.dead = true;
             }
         }
+        return damage;
     }
 
     // Apply the actual points of heal, we can't heal more than the maximum health
