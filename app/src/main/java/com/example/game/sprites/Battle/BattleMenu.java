@@ -5,11 +5,10 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.media.MediaPlayer;
 
-import com.example.game.GameState;
 import com.example.game.R;
-import com.example.game.sprites.Background;
+import com.example.game.sprites.Background.Background;
 import com.example.game.sprites.Character.Hero;
-import com.example.game.sprites.Character.Orc;
+import com.example.game.sprites.Enemies.Orc;
 import com.example.game.sprites.Numbers.Damage;
 import com.example.game.sprites.Numbers.Hp;
 import com.example.game.sprites.buttons.BattleButtons;

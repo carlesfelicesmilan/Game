@@ -11,11 +11,13 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.example.game.sprites.Background;
+import com.example.game.sprites.Background.Background;
 import com.example.game.sprites.Battle.BattleMenu;
-import com.example.game.sprites.Character.Enemy;
+import com.example.game.sprites.Battle.NewBattleMenu;
 import com.example.game.sprites.Character.Hero;
-import com.example.game.sprites.Character.Orc;
+import com.example.game.sprites.Character.newHero;
+import com.example.game.sprites.Enemies.Dragon;
+import com.example.game.sprites.Enemies.Orc;
 import com.example.game.sprites.Obstacle;
 import com.example.game.sprites.buttons.BackOptionsButton;
 import com.example.game.sprites.buttons.ExitButton;
@@ -53,9 +55,14 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     private StartButton startButton;
     private ExitButton exitButton;
 
+    private NewBattleMenu battleMenu2;
+
+    private Dragon dragon;
+    private newHero hero;
+
     //private Enemy coin;
 
-    private Hero hero;
+    //private Hero hero;
     private Orc orc;
 
     private BattleMenu battle;
@@ -103,9 +110,11 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
         backOptionsButton = new BackOptionsButton(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         scoreSprite = new Score(getResources(), dm.heightPixels, dm.widthPixels);
         //coin = new Enemy(getResources(), dm.heightPixels, dm.widthPixels, this);
-        hero = new Hero(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         orc = new Orc(getResources(), dm.heightPixels, dm.widthPixels);
         battle = new BattleMenu(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
+        dragon = new Dragon("Dragon", 150, 20, 5);
+        hero = new newHero("Steyn", 200, 10, 7);
+        battleMenu2 = new NewBattleMenu(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
     }
 
     private void initSounds() {
@@ -158,7 +167,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
             case PLAYING:
                 //orc.update();
                 //hero.update();
-                battle.update();
+                //battle.update();
+                battleMenu2.update(hero, dragon);
                 break;
             case GAME_OVER:
                 break;
@@ -181,7 +191,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     backOptionsButton.draw(canvas);
                     break;
                 case PLAYING:
-                    battle.draw(canvas);
+                    //battle.draw(canvas);
+                    battleMenu2.draw(canvas);
                     break;
                 case BATTLE:
                     backOptionsButton.draw(canvas);
@@ -223,7 +234,8 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                 }
                 break;
             case PLAYING:
-                battle.buttonClicked(evX,evY);
+                //battle.buttonClicked(evX,evY);
+                battleMenu2.isButtonPressed(evX,evY);
                 break;
 
             case BATTLE:

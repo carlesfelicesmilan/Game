@@ -4,8 +4,10 @@ public enum BattleState {
         INITIAL,
         ATTACK,
         ENEMYHIT,
+        ENEMYFIRE,
         SPELL,
         BAG,
         RUN,
         GAME_OVER,
+    ;
 }

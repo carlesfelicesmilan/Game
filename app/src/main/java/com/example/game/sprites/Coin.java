@@ -1,4 +1,4 @@
-package com.example.game.sprites.Character;
+package com.example.game.sprites;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -12,7 +12,7 @@ import com.example.game.GameManagerCallback;
 import com.example.game.R;
 import com.example.game.sprites.Sprite;
 
-public class Enemy implements Sprite {
+public class Coin implements Sprite {
 
     private int screenWidth, screenHeight;
     private Resources resources;
@@ -22,7 +22,7 @@ public class Enemy implements Sprite {
     private boolean coinClicked = false;
     private GameManagerCallback callback;
 
-    public Enemy(Resources resources, int screenHeight, int screenWidth, GameManager callback) {
+    public Coin(Resources resources, int screenHeight, int screenWidth, GameManager callback) {
         this.resources = resources;
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;

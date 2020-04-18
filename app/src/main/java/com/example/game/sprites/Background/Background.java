@@ -1,4 +1,4 @@
-package com.example.game.sprites;
+package com.example.game.sprites.Background;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 
 import com.example.game.R;
+import com.example.game.sprites.Sprite;
 
 public class Background implements Sprite {
 

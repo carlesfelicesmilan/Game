@@ -1,4 +1,4 @@
-package com.example.game.sprites.Character;
+package com.example.game.sprites.Enemies;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

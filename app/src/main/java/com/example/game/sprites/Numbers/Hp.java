@@ -21,18 +21,7 @@ public class Hp {
     public void draw(Canvas canvas) {
         ArrayList<Bitmap> currentHp = number.convertToBitmap(hp);
         for (int i = 0; i < currentHp.size(); i++) {
-            //int x = posX - currentHp.size() * numberWidth / 2 + numberHeight * i;
-            //int x = posX + numberHeight * i;
             int x = posX + number.getNumberWidth() * i;
-            canvas.drawBitmap(currentHp.get(i), x, posY, null);
-        }
-    }
-
-    public void drawEnemyHp(Canvas canvas) {
-        ArrayList<Bitmap> currentHp = number.convertToBitmap(hp);
-        for (int i = 0; i < currentHp.size(); i++) {
-            int x = posX - currentHp.size() * numberWidth / 2 + numberHeight * i;
-            //int x = posX - numberWidth * currentHp.size() + numberHeight * i;
             canvas.drawBitmap(currentHp.get(i), x, posY, null);
         }
     }
