@@ -6,41 +6,31 @@ import android.media.MediaPlayer;
 
 public class Spell {
     int atq;
-    String name;
-    int spellWidth, spellHeight, spellX, spellY;
-    Bitmap spellAsset;
-    MediaPlayer spellSound;
+    int width, height, posX, posY;
+    Bitmap asset;
+    MediaPlayer sound;
 
-    public int getSpellAtq() {
-        return atq;
-    }
-
-    public void setSpellAtq(int atq) {
-        this.atq = atq;
-    }
-
-    public String getWeaponName() {
-        return name;
-    }
-
-    public void setSpellName(String name) {
-        this.name = name;
-    }
-
-    public void setPosition(int x, int y) {
-        this.spellX=x;
-        this.spellY=y;
+    public Spell(int width, int height, int posX, int posY, Bitmap asset, MediaPlayer sound) {
+        this.width = width;
+        this.height = height;
+        this.posX = posX;
+        this.posY = posY;
+        this.asset = Bitmap.createScaledBitmap(asset, width, height, false);
+        this.sound = sound;
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(spellAsset, spellX, spellY, null);
+        canvas.drawBitmap(asset, posX, posY, null);
     }
 
-    public void sound() {
-        spellSound.start();
+    public void startSound() {
+        sound.start();
     }
 
-    public void setSpellSize(int x, int y) {
-        spellAsset = Bitmap.createScaledBitmap(spellAsset, x, y, false);
+    public void setPosition(int x, int y) {
+        this.posX = x;
+        this.posY = y;
     }
+
+
 }

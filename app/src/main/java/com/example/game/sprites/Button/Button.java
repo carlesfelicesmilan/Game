@@ -1,15 +1,15 @@
-package com.example.game.sprites.NewButton;
+package com.example.game.sprites.Button;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.media.MediaPlayer;
 
-public class NewButton{
+public class Button {
     int width, height, posX, posY;
     Bitmap asset;
     MediaPlayer sound;
 
-    public NewButton(int width, int height, int posX, int posY, Bitmap asset, MediaPlayer sound) {
+    public Button(int width, int height, int posX, int posY, Bitmap asset, MediaPlayer sound) {
         this.width = width;
         this.height = height;
         this.posX = posX;

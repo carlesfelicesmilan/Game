@@ -9,6 +9,7 @@ public enum BattleState {
         SPELL,
         BAG,
         RUN,
+        WIN,
         GAME_OVER,
     ;
 }

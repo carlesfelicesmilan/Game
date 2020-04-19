@@ -8,34 +8,18 @@ import android.media.MediaPlayer;
 
 import com.example.game.R;
 import com.example.game.sprites.Background.Background;
-import com.example.game.sprites.Background.NewBackground;
-import com.example.game.sprites.Character.Hero;
-import com.example.game.sprites.Character.newHero;
-import com.example.game.sprites.Enemies.Dragon;
-import com.example.game.sprites.Enemies.Orc;
-import com.example.game.sprites.NewButton.NewButton;
-import com.example.game.sprites.Numbers.Damage;
-import com.example.game.sprites.Numbers.Hp;
-import com.example.game.sprites.Numbers.NewNumbers;
-import com.example.game.sprites.Spells.NewSpell;
+import com.example.game.sprites.Button.Button;
+import com.example.game.sprites.Living.Hero.Hero;
+import com.example.game.sprites.Living.Enemies.Dragon;
+import com.example.game.sprites.Numbers.Numbers;
+import com.example.game.sprites.Spells.Spell;
 
-public class NewBattleMenu {
-    /*
-    private int turns;
-    private Orc enemy;
-    private Hero hero;
-    private Hp heroHp, enemyHp;
-    private Damage enemyDamage;
-    private Background background;
-    public boolean loaded;
-    private int damage;
+public class Battle {
 
-*/
-
-    private NewButton attack, spell, item, run;
-    private NewButton attackClicked, spellClicked, itemClicked, runClicked;
-    private NewButton heroButton, enemyButton;
-    private NewBackground field, panel;
+    private Button attack, spell, item, run;
+    private Button attackClicked, spellClicked, itemClicked, runClicked;
+    private Button heroButton, enemyButton;
+    private Background field, panel;
 
     private BattleState battleState;
     private MediaPlayer battleMusic;
@@ -52,13 +36,10 @@ public class NewBattleMenu {
 
     private boolean isLoaded;
 
-    private Dragon gengar;
+    private Numbers heroHp;
+    private Numbers enemyDamageTaken;
 
-    private NewNumbers heroHp;
-    private NewNumbers EnemyHp;
-    private NewNumbers enemyDamageTaken;
-
-    private NewSpell fire;
+    private Spell fire;
 
     private int menuSpeed;
     private int spellSpeed;
@@ -66,7 +47,7 @@ public class NewBattleMenu {
     private boolean hit;
 
 
-    public NewBattleMenu(Resources resources, Context context, int screenHeight, int screenWidth) {
+    public Battle(Resources resources, Context context, int screenHeight, int screenWidth) {
 
         battleState = BattleState.INITIAL;
 
@@ -116,24 +97,24 @@ public class NewBattleMenu {
         spellHeroWidth = heroWidth;
         spellHeroHeight = heroWidth;
 
-        field = new NewBackground(fieldWidth,fieldHeight,fieldX,fieldY, BitmapFactory.decodeResource(resources, R.drawable.background2));
+        field = new Background(fieldWidth,fieldHeight,fieldX,fieldY, BitmapFactory.decodeResource(resources, R.drawable.background2));
 
-        heroButton = new NewButton(heroWidth, heroHeight, heroX, heroY, BitmapFactory.decodeResource(resources, R.drawable.charizardback), MediaPlayer.create(context, R.raw.clinc));
-        enemyButton = new NewButton(enemyWidth, enemyHeight, enemyX, enemyY, BitmapFactory.decodeResource(resources, R.drawable.gengar), MediaPlayer.create(context, R.raw.hit));
+        heroButton = new Button(heroWidth, heroHeight, heroX, heroY, BitmapFactory.decodeResource(resources, R.drawable.charizardback), MediaPlayer.create(context, R.raw.clinc));
+        enemyButton = new Button(enemyWidth, enemyHeight, enemyX, enemyY, BitmapFactory.decodeResource(resources, R.drawable.gengar), MediaPlayer.create(context, R.raw.hit));
 
-        panel = new NewBackground(panelWidth,panelHeight,panelX,panelY, BitmapFactory.decodeResource(resources, R.drawable.panel2));
+        panel = new Background(panelWidth,panelHeight,panelX,panelY, BitmapFactory.decodeResource(resources, R.drawable.panel2));
 
-        attack = new NewButton(buttonWidth, buttonHeight, attackButtonX, attackButtonY, BitmapFactory.decodeResource(resources, R.drawable.attack), MediaPlayer.create(context, R.raw.clinc));
-        spell = new NewButton(buttonWidth, buttonHeight, spellButtonX, spellButtonY, BitmapFactory.decodeResource(resources, R.drawable.pokemon), MediaPlayer.create(context, R.raw.clinc));
-        item = new NewButton(buttonWidth, buttonHeight, itemButtonX, itemButtonY, BitmapFactory.decodeResource(resources, R.drawable.bag), MediaPlayer.create(context, R.raw.clinc));
-        run = new NewButton(buttonWidth, buttonHeight, runButtonX, runButtonY, BitmapFactory.decodeResource(resources, R.drawable.run), MediaPlayer.create(context, R.raw.clinc));
+        attack = new Button(buttonWidth, buttonHeight, attackButtonX, attackButtonY, BitmapFactory.decodeResource(resources, R.drawable.attack), MediaPlayer.create(context, R.raw.clinc));
+        spell = new Button(buttonWidth, buttonHeight, spellButtonX, spellButtonY, BitmapFactory.decodeResource(resources, R.drawable.pokemon), MediaPlayer.create(context, R.raw.clinc));
+        item = new Button(buttonWidth, buttonHeight, itemButtonX, itemButtonY, BitmapFactory.decodeResource(resources, R.drawable.bag), MediaPlayer.create(context, R.raw.clinc));
+        run = new Button(buttonWidth, buttonHeight, runButtonX, runButtonY, BitmapFactory.decodeResource(resources, R.drawable.run), MediaPlayer.create(context, R.raw.clinc));
 
-        attackClicked = new NewButton(buttonWidth, buttonHeight, attackButtonX, attackButtonY, BitmapFactory.decodeResource(resources, R.drawable.attackpressed), MediaPlayer.create(context, R.raw.clinc));
+        attackClicked = new Button(buttonWidth, buttonHeight, attackButtonX, attackButtonY, BitmapFactory.decodeResource(resources, R.drawable.attackpressed), MediaPlayer.create(context, R.raw.clinc));
 
-        heroHp = new NewNumbers(heroHpWidth, heroHpHeight, heroHpX, heroHpY, resources);
-        enemyDamageTaken = new NewNumbers(heroHpWidth, heroHpHeight, enemyDamageTakenX, enemyDamageTakenY, resources);
+        heroHp = new Numbers(heroHpWidth, heroHpHeight, heroHpX, heroHpY, resources);
+        enemyDamageTaken = new Numbers(heroHpWidth, heroHpHeight, enemyDamageTakenX, enemyDamageTakenY, resources);
 
-        fire = new NewSpell(spellHeroWidth,spellHeroHeight, spellHeroX, spellHeroY, BitmapFactory.decodeResource(resources, R.drawable.nancy),MediaPlayer.create(context, R.raw.flame));
+        fire = new Spell(spellHeroWidth,spellHeroHeight, spellHeroX, spellHeroY, BitmapFactory.decodeResource(resources, R.drawable.nancy),MediaPlayer.create(context, R.raw.flame));
 
         menuSpeed = 3;
         spellSpeed = 4;
@@ -259,7 +240,6 @@ public class NewBattleMenu {
             else {
                 battleState = battleState.INITIAL;
             }
-           // battleState = BattleState.INITIAL;
         }
         else if(battleState == BattleState.SPELL) {
             if(enemyButton.isClicked(x,y)) {
@@ -271,7 +251,6 @@ public class NewBattleMenu {
             else {
                 battleState = battleState.INITIAL;
             }
-           // battleState = BattleState.INITIAL;
         }
         else if(battleState == BattleState.BAG) {
             battleState = BattleState.INITIAL;
@@ -281,7 +260,7 @@ public class NewBattleMenu {
         }
     }
 
-    public void update(newHero hero, Dragon dragon) {
+    public void update(Hero hero, Dragon dragon) {
         if((heroX > 0) && (enemyX < panelWidth - enemyWidth)){
             heroX-=menuSpeed;
             enemyX+=menuSpeed;
@@ -328,5 +307,17 @@ public class NewBattleMenu {
                 battleState = BattleState.INITIAL;
                 }
         }
+        if(dragon.isDead()) {
+            battleMusic.stop();
+            battleState = BattleState.WIN;
+        }
+        if(hero.isDead()) {
+            battleMusic.stop();
+            battleState = BattleState.GAME_OVER;
+        }
+    }
+
+    public String getBattleState() {
+        return battleState.toString();
     }
 }

@@ -16,24 +16,26 @@ import java.util.HashMap;
 public class Numbers implements Sprite {
 
     private static final String SCORE_PREF = "Score pref";
-    private Bitmap zero;
-    private Bitmap one;
-    private Bitmap two;
-    private Bitmap three;
-    private Bitmap four;
-    private Bitmap five;
-    private Bitmap six;
-    private Bitmap seven;
-    private Bitmap eight;
-    private Bitmap nine;
-    private HashMap<Integer, Bitmap> map = new HashMap<>();
-    private int screenHeight, screenWidth, hpPosX, hpPosY, damagePosY, damagePosX, damageInitialPosY, damageInitialPosX;
-    private int hp;
-    private int receivedDamage;
-    private int speedY, speedX;
-    private boolean hit = false;
+    Bitmap zero;
+    Bitmap one;
+    Bitmap two;
+    Bitmap three;
+    Bitmap four;
+    Bitmap five;
+    Bitmap six;
+    Bitmap seven;
+    Bitmap eight;
+    Bitmap nine;
+    int width, height, posX, posY;
+    HashMap<Integer, Bitmap> map = new HashMap<>();
+    int points;
 
-    public Numbers(Resources resources) {
+    public Numbers(int width, int height, int posX, int posY, Resources resources) {
+
+        this.width = width;
+        this.height = height;
+        this.posX = posX;
+        this.posY = posY;
 
         zero = BitmapFactory.decodeResource(resources, R.drawable.zero);
         one = BitmapFactory.decodeResource(resources, R.drawable.one);
@@ -46,6 +48,17 @@ public class Numbers implements Sprite {
         eight = BitmapFactory.decodeResource(resources, R.drawable.eight);
         nine = BitmapFactory.decodeResource(resources, R.drawable.nine);
 
+        zero = Bitmap.createScaledBitmap(zero, width, height, false);
+        one = Bitmap.createScaledBitmap(one, width, height, false);
+        two = Bitmap.createScaledBitmap(two, width, height, false);
+        three = Bitmap.createScaledBitmap(three, width, height, false);
+        four = Bitmap.createScaledBitmap(four, width, height, false);
+        five = Bitmap.createScaledBitmap(five, width, height, false);
+        six = Bitmap.createScaledBitmap(six, width, height, false);
+        seven = Bitmap.createScaledBitmap(seven, width, height, false);
+        eight = Bitmap.createScaledBitmap(eight, width, height, false);
+        nine = Bitmap.createScaledBitmap(nine, width, height, false);
+
         map.put(0, zero);
         map.put(1, one);
         map.put(2, two);
@@ -57,9 +70,6 @@ public class Numbers implements Sprite {
         map.put(8, eight);
         map.put(9, nine);
 
-        // Speed of the damage when enemy is hit
-        speedY = -5;
-        speedX = 5;
     }
 
     // In this Array we show the actual amount of the score shown when the user is playing
@@ -86,7 +96,11 @@ public class Numbers implements Sprite {
     // We alwyas draw the hp, we only draw the damage when the enemy is hit
     @Override
     public void draw(Canvas canvas) {
-
+        ArrayList<Bitmap> number = convertToBitmap(points);
+        for (int i = 0; i < number.size(); i++) {
+            int x = posX + getNumberWidth() * i;
+            canvas.drawBitmap(number.get(i), x, posY, null);
+        }
     }
 
     @Override
@@ -94,44 +108,17 @@ public class Numbers implements Sprite {
 
     }
 
-    public void isHit(boolean hit) {
-        this.hit = hit;
-    }
-
-    public void updateDamage(int damage) {
-        this.receivedDamage = damage;
-    }
-
-    public void scaleNumbers(int x, int y) {
-        zero = Bitmap.createScaledBitmap(zero, x, y, false);
-        one = Bitmap.createScaledBitmap(one, x, y, false);
-        two = Bitmap.createScaledBitmap(two, x, y, false);
-        three = Bitmap.createScaledBitmap(three, x, y, false);
-        four = Bitmap.createScaledBitmap(four, x, y, false);
-        five = Bitmap.createScaledBitmap(five, x, y, false);
-        six = Bitmap.createScaledBitmap(six, x, y, false);
-        seven = Bitmap.createScaledBitmap(seven, x, y, false);
-        eight = Bitmap.createScaledBitmap(eight, x, y, false);
-        nine = Bitmap.createScaledBitmap(nine, x, y, false);
-
-        map.put(0, zero);
-        map.put(1, one);
-        map.put(2, two);
-        map.put(3, three);
-        map.put(4, four);
-        map.put(5, five);
-        map.put(6, six);
-        map.put(7, seven);
-        map.put(8, eight);
-        map.put(9, nine);
+    public void setPosition(int x, int y) {
+        this.posX = x;
+        this.posY = y;
     }
 
     public int getNumberWidth() {
         return zero.getWidth();
     }
 
-    public int getNumberHeight() {
-        return zero.getHeight();
+    public void updateNumber(int amount) {
+        this.points = amount;
     }
 
 }

@@ -1,18 +1,18 @@
-package com.example.game.sprites.Character;
-
-import java.util.Random;
+package com.example.game.sprites.Living;
 
 public class LivingThing{
-    public int health, actualHealth, attack, defense;
+    public int health, actualHealth, attack, defense, money, exp;
     public String name;
     public boolean dead;
 
-    public LivingThing(String name, int health, int attack, int defense) {
+    public LivingThing(String name, int health, int attack, int defense, int money, int exp) {
         this.name = name;
         this.health = health;
         this.actualHealth = health;
         this.attack = attack;
         this.defense = defense;
+        this.money = money;
+        this.exp = exp;
         this.dead = false;
     }
 
@@ -42,6 +42,18 @@ public class LivingThing{
 
     public void takeFire() {
         takeDamage(30);
+    }
+
+    public int getAtq() {return attack;}
+
+    public int getDef() {return defense;}
+
+    public int getExp() {
+        return exp;
+    }
+
+    public int getMoney() {
+        return money;
     }
 }
 

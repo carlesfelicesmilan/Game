@@ -9,7 +9,6 @@ import android.media.MediaPlayer;
 public class Weapon {
     int atq;
     String name;
-    private int weaponWidth, weaponHeight, weaponX, weaponY;
     Bitmap weaponAsset;
     MediaPlayer weaponSound;
 
@@ -27,10 +26,6 @@ public class Weapon {
 
     public void setWeaponName(String name) {
         this.name = name;
-    }
-
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(weaponAsset, weaponX, weaponY, null);
     }
 
     public void sound() {
