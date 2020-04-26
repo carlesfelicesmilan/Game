@@ -4,10 +4,13 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.media.MediaPlayer;
 
+import com.example.game.sprites.Dictionary.Letters;
+
 public class Button {
     int width, height, posX, posY;
     Bitmap asset;
     MediaPlayer sound;
+    Letters text;
 
     public Button(int width, int height, int posX, int posY, Bitmap asset, MediaPlayer sound) {
         this.width = width;
@@ -35,9 +38,29 @@ public class Button {
     public void update() {
     }
 
+    public int getX() {
+        return posX;
+    }
+
+    public int getY() {
+        return posY;
+    }
+
     public void setPosition(int x, int y) {
         this.posX = x;
         this.posY = y;
+    }
+
+    public void setPosY(int y) {
+        this.posY = y;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public void setSize(int width, int height) {
@@ -58,6 +81,10 @@ public class Button {
 
     public void changeAsset(Bitmap asset) {
         this.asset = Bitmap.createScaledBitmap(asset, width, height, false);
+    }
+
+    public void addText(String text) {
+
     }
 
 }

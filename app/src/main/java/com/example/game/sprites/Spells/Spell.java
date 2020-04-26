@@ -19,6 +19,14 @@ public class Spell {
         this.sound = sound;
     }
 
+    public Spell(int width, int height, int posX, int posY, Bitmap asset) {
+        this.width = width;
+        this.height = height;
+        this.posX = posX;
+        this.posY = posY;
+        this.asset = Bitmap.createScaledBitmap(asset, width, height, false);
+    }
+
     public void draw(Canvas canvas) {
         canvas.drawBitmap(asset, posX, posY, null);
     }

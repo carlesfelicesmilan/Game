@@ -1,18 +1,18 @@
 package com.example.game.sprites.Living;
 
 public class LivingThing{
-    public int health, actualHealth, attack, defense, money, exp;
+    public int health, actualHealth, attack, defense, money, experience;
     public String name;
     public boolean dead;
 
-    public LivingThing(String name, int health, int attack, int defense, int money, int exp) {
+    public LivingThing(String name, int health, int attack, int defense, int money, int experience) {
         this.name = name;
         this.health = health;
         this.actualHealth = health;
         this.attack = attack;
         this.defense = defense;
         this.money = money;
-        this.exp = exp;
+        this.experience = experience;
         this.dead = false;
     }
 
@@ -48,8 +48,12 @@ public class LivingThing{
 
     public int getDef() {return defense;}
 
+    public int getHp() {
+        return actualHealth;
+    }
+
     public int getExp() {
-        return exp;
+        return experience;
     }
 
     public int getMoney() {

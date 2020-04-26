@@ -6,20 +6,36 @@ import com.example.game.sprites.Living.LivingThing;
 
 public class Hero extends LivingThing {
 
-    private int actualExp;
-    private int actualMoney;
-    public Hero(String name, int health, int attack, int defense, int money, int exp) {
-        super(name, health, attack, defense, money, exp);
-        this.actualExp = exp;
-        this.actualMoney = money;
+    private static final String MONEY = "Money";
+    private static final String EXPERIENCE = "Experience";
+
+    public Hero(String name, int health, int attack, int defense, int money, int experience) {
+        super(name, health, attack, defense, money, experience);
     }
 
-    public void updateExp(int experience) {
-        this.actualExp = this.actualExp + experience;
+    public void updateMoney(SharedPreferences prefs) {
+        if (money > prefs.getInt(MONEY, money)) {
+            prefs.edit().putInt(MONEY, money).apply();
+        }
+        else {
+            money = prefs.getInt(MONEY, money);
+        }
     }
 
-    public void updateMoney(int money) {
-        this.actualMoney = this.actualMoney + money;
+    public void updateExp(SharedPreferences prefs) {
+        if (experience > prefs.getInt(EXPERIENCE, experience)) {
+            prefs.edit().putInt(EXPERIENCE, experience).apply();
+        }
+        else {
+            experience = prefs.getInt(EXPERIENCE, experience);
+        }
     }
 
+    public void receiveMoney(int money) {
+        this.money = this.money + money;
+    }
+
+    public void receiveExp(int experience) {
+        this.experience = this.experience + experience;
+    }
 }

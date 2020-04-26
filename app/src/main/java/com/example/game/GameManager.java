@@ -2,6 +2,7 @@ package com.example.game;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -12,7 +13,6 @@ import android.view.SurfaceView;
 
 import com.example.game.sprites.Battle.Battle;
 import com.example.game.sprites.Living.Hero.Hero;
-import com.example.game.sprites.Living.Enemies.Dragon;
 import com.example.game.sprites.Screens.MainScreen;
 import com.example.game.sprites.Obstacle;
 import com.example.game.sprites.GameOver;
@@ -44,7 +44,7 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
 
     private Battle battle;
 
-    private Dragon dragon;
+    //private Dragon dragon;
     private Hero hero;
 
     public GameManager(Context context, AttributeSet attributeSet) {
@@ -56,20 +56,19 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
         // This context comes from main activity. Main activity initiates the view and the view opens the game manager
         // We need to convert the context into an Activity so we can get the window manager
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-
         initGame();
     }
 
     // Initiate the game and create the bird
     // We need to restart bird position and obstacle position everytime that we start a new game
     private void initGame() {
-        score = 0;
+        //score = 0;
         gameOver = new GameOver(getResources(), dm.heightPixels, dm.widthPixels);
-        dragon = new Dragon("Dragon", 150, 20, 5, 30, 20);
+        //dragon = new Dragon("Dragon", 150, 20, 5, 30, 20);
         hero = new Hero("Steyn", 200, 50, 7, 50, 0);
-        battle = new Battle(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         mainScreen = new MainScreen(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
         statusScreen = new StatusScreen(getResources(), getContext(), dm.heightPixels, dm.widthPixels);
+        //battle = new Battle(getResources(), getContext(), dm.heightPixels, dm.widthPixels, hero);
     }
 
     //Start the thread
@@ -80,7 +79,6 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
         }
         thread.setRunning(true);
         thread.start();
-
     }
 
     @Override
@@ -105,19 +103,17 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
 
     public void update(){
         switch (gameState) {
-            case PLAYING:
-                battle.update(hero, dragon);
+            case GAME_OVER:
+                break;
+            case BATTLE:
+                battle.update();
                 if(battle.getBattleState() == "WIN") {
-                    hero.exp += dragon.exp;
-                    hero.money += dragon.money;
-                    //hero.updateExp(dragon.getExp());
-                    //hero.updateMoney(dragon.getMoney());
+                    hero.receiveMoney(battle.getMoney());
+                    hero.receiveExp(battle.getExp());
                     gameState = GameState.INITIAL;
                     break;
                 }
-            case GAME_OVER:
                 break;
-
         }
     }
 
@@ -126,20 +122,27 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
     public void draw(Canvas canvas) {
         super.draw(canvas);
         if (canvas != null) {
-            canvas.drawRGB(211,211,211);
+            canvas.drawRGB(0,0,0);
             switch (gameState) {
                 case INITIAL:
                     mainScreen.draw(canvas);
+                    hero.updateMoney(getContext().getSharedPreferences(APP_NAME, Context.MODE_PRIVATE));
+                    hero.updateExp(getContext().getSharedPreferences(APP_NAME, Context.MODE_PRIVATE));
                     break;
                 case STATUS:
-                    statusScreen.updateStatus(hero.attack, hero.defense, hero.exp, hero.money);
+                    statusScreen.updateStatus(hero.attack, hero.defense, hero.experience, hero.money);
                     statusScreen.draw(canvas);
                     break;
                 case PLAYING:
-                    battle.draw(canvas);
                     break;
                 case BATTLE:
+                    battle.draw(canvas);
                     break;
+                /*case WIN:
+                    victory.draw();
+                    break;
+
+                 */
                 case GAME_OVER:
                     gameOver.draw(canvas);
                     break;
@@ -165,8 +168,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     gameState = GameState.STATUS;
                     break;
                 }
-                else if(mainScreen.isStartClicked(evX,evY)) {
-                    gameState = GameState.PLAYING;
+                else if(mainScreen.isnewGameClicked(evX,evY)) {
+                    battle = new Battle(getResources(), getContext(), dm.heightPixels, dm.widthPixels, hero);
+                    gameState = GameState.BATTLE;
                     break;
                 }
 
@@ -180,8 +184,9 @@ public class GameManager extends SurfaceView implements SurfaceHolder.Callback, 
                     break;
                 }
             case PLAYING:
-                battle.isButtonPressed(evX,evY);
+                break;
             case BATTLE:
+                battle.isButtonPressed(evX,evY);
                 break;
             case GAME_OVER:
                 initGame();

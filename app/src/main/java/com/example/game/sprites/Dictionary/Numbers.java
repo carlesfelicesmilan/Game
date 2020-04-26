@@ -1,11 +1,9 @@
-package com.example.game.sprites.Numbers;
+package com.example.game.sprites.Dictionary;
 
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 
 import com.example.game.R;
 import com.example.game.sprites.Sprite;
@@ -13,7 +11,7 @@ import com.example.game.sprites.Sprite;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Numbers implements Sprite {
+public class Numbers {
 
     private static final String SCORE_PREF = "Score pref";
     Bitmap zero;
@@ -29,6 +27,7 @@ public class Numbers implements Sprite {
     int width, height, posX, posY;
     HashMap<Integer, Bitmap> map = new HashMap<>();
     int points;
+
 
     public Numbers(int width, int height, int posX, int posY, Resources resources) {
 
@@ -93,8 +92,6 @@ public class Numbers implements Sprite {
         return finalDigits;
     }
 
-    // We alwyas draw the hp, we only draw the damage when the enemy is hit
-    @Override
     public void draw(Canvas canvas) {
         ArrayList<Bitmap> number = convertToBitmap(points);
         for (int i = 0; i < number.size(); i++) {
@@ -103,10 +100,6 @@ public class Numbers implements Sprite {
         }
     }
 
-    @Override
-    public void update() {
-
-    }
 
     public void setPosition(int x, int y) {
         this.posX = x;
